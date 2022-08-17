@@ -29,10 +29,11 @@
 <script>
 import KeenSlider from 'keen-slider'
 import 'keen-slider/keen-slider.min.css'
-import { defineComponent } from 'vue'
 import throttle from '#ioc/utils/throttle'
+import { ref } from 'vue'
+import { useKeenSlider } from 'keen-slider/vue'
 
-export default defineComponent({
+export default {
   props: {
     slides: {
       type: Array,
@@ -64,9 +65,47 @@ export default defineComponent({
     },
   },
 
+  setup() {
+    const [container, slider] = useKeenSlider(
+      {
+        slides: { perView: this.slidesPerView },
+        initial: this.currentPage,
+        loop: this.loop,
+        breakpoints: this.breakpoints,
+        dragStart: () => this.onDragStart(),
+        dragEnd: () => this.onDragEnd(),
+        move: () => this.onMove(),
+        slideChanged: (slider) => {
+          this.currentPage = Math.floor(slider.details().relativeSlide / this.x_slidesPerView)
+        },
+      },
+      [
+        // add plugins here
+      ],
+    )
+    return { container, slider }
+  },
+
+  // mounted() {
+  //   this.slider = new KeenSlider(this.$el, {
+  //     slidesPerView: this.slidesPerView,
+  //     initial: this.currentPage,
+  //     loop: this.loop,
+  //     breakpoints: this.breakpoints,
+  //     dragStart: () => this.onDragStart(),
+  //     dragEnd: () => this.onDragEnd(),
+  //     move: () => this.onMove(),
+  //     slideChanged: (slider) => {
+  //       this.currentPage = Math.floor(slider.details().relativeSlide / this.x_slidesPerView)
+  //     },
+  //   })
+
+  //   this.x_isMounted = true
+
+  //   this.setInterval()
+  // },
   data() {
     return {
-      slider: null,
       x_isMounted: false,
       x_pause: false,
       x_interval: null,
@@ -110,25 +149,6 @@ export default defineComponent({
     x_slides() {
       if (this.slider) this.$nextTick(() => this.slider.refresh())
     },
-  },
-
-  mounted() {
-    this.slider = new KeenSlider(this.$el, {
-      slidesPerView: this.slidesPerView,
-      initial: this.currentPage,
-      loop: this.loop,
-      breakpoints: this.breakpoints,
-      dragStart: () => this.onDragStart(),
-      dragEnd: () => this.onDragEnd(),
-      move: () => this.onMove(),
-      slideChanged: (slider) => {
-        this.currentPage = Math.floor(slider.details().relativeSlide / this.x_slidesPerView)
-      },
-    })
-
-    this.x_isMounted = true
-
-    this.setInterval()
   },
 
   unmounted() {
@@ -195,7 +215,7 @@ export default defineComponent({
       }, this.interval)
     },
   },
-})
+}
 </script>
 
 <style scoped>
