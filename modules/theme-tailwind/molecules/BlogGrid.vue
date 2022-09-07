@@ -18,7 +18,6 @@
 import Heading from '#ioc/atoms/Heading'
 import BlogPostTile from '#ioc/molecules/BlogPostTile'
 import useI18n from '#ioc/composables/useI18n'
-import { defineProps } from 'vue'
 
 const { t } = useI18n()
 
