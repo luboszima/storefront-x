@@ -1,11 +1,12 @@
 <template>
-  <Container class="hidden lg:flex space-x-8">
+  <Container class="hidden lg:flex space-x-8" data-cy="hp-menu-row">
     <CategoryLink
       v-for="category in catalogStore.menu"
       :key="category.id"
       :category="category"
       classes="py-4 text-primary-500 font-semibold"
       color="primary"
+      data-cy="hp-menu-category-L1"
       @mouseenter="onMouseEnter(category)"
       @mouseleave="onMouseLeave(category)"
       @mouseout="removeTimeout"

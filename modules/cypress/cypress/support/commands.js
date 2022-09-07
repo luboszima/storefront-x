@@ -12,6 +12,9 @@
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
 //
+Cypress.Commands.add('selectCategoryFromMenuL1', (choose = 0) => {
+  cy.get('[data-cy=hp-menu-category-L1]').eq(choose)
+})
 //
 // -- This is a child command --
 // Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
