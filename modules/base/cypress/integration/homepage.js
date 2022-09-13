@@ -1,16 +1,5 @@
-import StoreSwitcher from '../support/pageObjects/StoreSwitcher'
-
 describe('Homepage', () => {
-  /** @type {StoreSwitcher} */
-  let storeSwitcher
-
-  beforeEach(() => {
-    storeSwitcher = new StoreSwitcher()
-
+  it('loads', () => {
     cy.visit('/')
-  })
-
-  it('switches stores', () => {
-    storeSwitcher.selectDifferentStore()
   })
 })
