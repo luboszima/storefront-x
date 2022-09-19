@@ -27,20 +27,16 @@
 </template>
 
 <script>
-import KeenSlider from 'keen-slider'
 import 'keen-slider/keen-slider.min.css'
 import { defineComponent } from 'vue'
 import throttle from '#ioc/utils/throttle'
+import schedule from '#ioc/utils/schedule'
 
 export default defineComponent({
   props: {
     slides: {
       type: Array,
       default: () => [],
-    },
-    slidesPerView: {
-      type: Number,
-      default: 1,
     },
     interval: {
       type: Number,
@@ -70,6 +66,7 @@ export default defineComponent({
       x_isMounted: false,
       x_pause: false,
       x_interval: null,
+      x_options: null,
       currentPage: 0,
       isStartingToDrag: false,
       isDragging: false,
@@ -77,12 +74,8 @@ export default defineComponent({
   },
 
   computed: {
-    x_options() {
-      return this.slider?.options
-    },
-
     x_slidesPerView() {
-      return this.x_options?.slidesPerView ?? this.slidesPerView
+      return this.x_options?.slides?.perView ?? 1
     },
 
     x_slides() {
@@ -108,29 +101,30 @@ export default defineComponent({
 
   watch: {
     x_slides() {
-      if (this.slider) this.$nextTick(() => this.slider.update())
+      if (this.slider) this.$nextTick(() => schedule(() => this.slider.update()))
     },
   },
 
   mounted() {
-    this.slider = new KeenSlider(this.$el, {
-      slides: {
-        perView: this.slidesPerView,
-      },
-      initial: this.currentPage,
-      loop: this.loop,
-      breakpoints: this.breakpoints,
-      dragStarted: () => this.onDragStart(),
-      dragEnded: () => this.onDragEnd(),
-      dragged: () => this.onMove(),
-      slideChanged: (slider) => {
-        this.currentPage = Math.floor(slider.track.details.rel / this.x_slidesPerView)
-      },
+    schedule(async () => {
+      const { default: KeenSlider } = await import('keen-slider')
+
+      this.slider = new KeenSlider(this.$el, {
+        initial: this.currentPage,
+        loop: this.loop,
+        breakpoints: this.breakpoints,
+        dragStarted: () => this.onDragStart(),
+        dragEnded: () => this.onDragEnd(),
+        dragged: () => this.onMove(),
+        slideChanged: (slider) => {
+          this.currentPage = Math.floor(slider.track.details.rel / this.x_slidesPerView)
+        },
+      })
+      this.slider.on('optionsChanged', () => ((this.x_options = this.slider.options), (this.currentPage = 0)), false)
+      this.x_isMounted = true
+
+      this.setInterval()
     })
-
-    this.x_isMounted = true
-
-    this.setInterval()
   },
 
   unmounted() {
@@ -191,8 +185,7 @@ export default defineComponent({
       this.x_interval = setInterval(() => {
         if (!this.x_pause) {
           const { abs } = this.slider.track.details
-          const { slidesPerView } = this.slider.options
-          this.slider.moveToIdx(abs + slidesPerView, true)
+          this.slider.moveToIdx(abs + this.x_slidesPerView, true)
         }
       }, this.interval)
     },

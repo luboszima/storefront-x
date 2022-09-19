@@ -4,13 +4,13 @@
     <ProductOverview />
     <ProductDetailTabs />
 
-    <section v-if="product?.upsellProducts?.length" class="pt-8 sm:px-0">
+    <section v-if="product?.upsellProducts?.length" class="mt-8 border-t border-gray-200 pt-8 sm:px-0">
       <Heading :level="2">{{ t('Customers also bought') }}</Heading>
 
       <ProductCarousel class="mt-8" :products="product?.upsellProducts" />
     </section>
 
-    <section v-if="product?.crossSellProducts?.length" class="pt-8 sm:px-0">
+    <section v-if="product?.crossSellProducts?.length" class="mt-8 border-t border-gray-200 pt-8 sm:px-0">
       <Heading :level="2">{{ t('Related products') }}</Heading>
 
       <ProductCarousel class="mt-8" :products="product?.crossSellProducts" />
@@ -22,23 +22,30 @@
 import Container from '#ioc/atoms/Container'
 import Breadcrumbs from '#ioc/molecules/Breadcrumbs'
 import ProductOverview from '#ioc/organisms/ProductOverview'
-import ProductDetailTabs from '#ioc/organisms/ProductDetailTabs'
 import injectProduct from '#ioc/composables/injectProduct'
 import useHead from '#ioc/composables/useHead'
-import ProductCarousel from '#ioc/organisms/ProductCarousel'
 import Heading from '#ioc/atoms/Heading'
 import useI18n from '#ioc/composables/useI18n'
-import { computed } from 'vue'
+import hydrateWhenVisible from '#ioc/utils/hydration/hydrateWhenVisible'
+
+const ProductDetailTabs = hydrateWhenVisible(() => import('#ioc/organisms/ProductDetailTabs'))
+const ProductCarousel = hydrateWhenVisible(() => import('#ioc/organisms/ProductCarousel'))
 
 const { t } = useI18n()
 const product = injectProduct()
 
 useHead({
-  title: computed(() => product.name),
+  title: product.meta.title,
   meta: [
     {
+      hid: 'description',
       name: 'description',
-      content: computed(() => product.meta.description),
+      content: product.meta.description,
+    },
+    {
+      hid: 'keywords',
+      name: 'keywords',
+      content: product.meta.keywords,
     },
   ],
 })

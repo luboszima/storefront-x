@@ -1,7 +1,7 @@
 <template>
   <Header />
   <HamburgerMenu v-if="hamburgerStatus" @close="closeHamburger" />
-  <main class="mt-[75px] md:mt-0">
+  <main class="mt-[66px] md:mt-0">
     <SfxLayoutOutlet />
   </main>
   <Footer />
@@ -9,14 +9,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, ref, watch } from 'vue'
 import useRoute from '#ioc/composables/useRoute'
 import SfxLayoutOutlet from '#ioc/components/SfxLayoutOutlet'
-import Header from '#ioc/organisms/Header'
-import Footer from '#ioc/organisms/Footer'
-import HamburgerMenu from '#ioc/organisms/HamburgerMenu'
-import Notifications from '#ioc/organisms/Notifications'
 import useThemeTailwindStore from '#ioc/stores/useThemeTailwindStore'
+import hydrateWhenVisible from '#ioc/utils/hydration/hydrateWhenVisible'
+import hydrateWhenIdle from '#ioc/utils/hydration/hydrateWhenIdle'
+import useHead from '#ioc/composables/useHead'
+
+const HamburgerMenu = defineAsyncComponent(() => import('#ioc/organisms/HamburgerMenu'))
+const Header = hydrateWhenIdle(() => import('#ioc/organisms/Header'))
+const Footer = hydrateWhenVisible(() => import('#ioc/organisms/Footer'))
+const Notifications = hydrateWhenIdle(() => import('#ioc/organisms/Notifications'))
 
 const route = useRoute()
 const themeTailwindStore = useThemeTailwindStore()
@@ -43,4 +47,9 @@ const closeHamburger = () => {
     themeTailwindStore.isHamburgerOpened = false
   }
 }
+
+useHead({
+  title: 'Storefront X',
+  meta: [{ hid: 'description', name: 'description', content: 'SSR + PWA e-commerce solution' }],
+})
 </script>

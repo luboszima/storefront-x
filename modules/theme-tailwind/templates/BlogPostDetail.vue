@@ -8,7 +8,13 @@
 
         <div v-html="blogPost.shortContent" />
 
-        <SfxImage :src="blogPost.postThumbnail" :width="700" :height="450" class-img="mt-4 rounded-lg" />
+        <SfxImage
+          :src="blogPost.postThumbnail"
+          :width="700"
+          :height="450"
+          :alt="blogPost.title"
+          class-img="mt-4 rounded-lg"
+        />
       </Container>
 
       <SfxMagentoCmsPage :cms-page="blogPost.fullContent" />
@@ -26,7 +32,9 @@ import Heading from '#ioc/atoms/Heading'
 import useBlogPost from '#ioc/composables/useBlogPost'
 import { computed, PropType, toRef } from 'vue'
 import ToBlogPost from '#ioc/mappers/ToBlogPost'
-import SfxMagentoCmsPage from '#ioc/components/SfxMagentoCmsPage'
+import hydrateWhenIdle from '#ioc/utils/hydration/hydrateWhenIdle'
+
+const SfxMagentoCmsPage = hydrateWhenIdle(() => import('#ioc/components/SfxMagentoCmsPage'))
 
 const props = defineProps({
   id: {

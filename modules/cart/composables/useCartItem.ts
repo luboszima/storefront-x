@@ -15,6 +15,16 @@ export default (cartItem: Ref<ReturnType<typeof ToCartItem>>) => {
 
   const product = useProduct(computed(() => cartItem.value.product))
 
+  const configurableOptions = computed(() => cartItem.value.configurableOptions ?? [])
+
+  const isConfigurableProduct = computed(() => cartItem.value.product?.__typename === 'ConfigurableProduct')
+
+  const isBundleProduct = computed(() => cartItem.value.product?.__typename === 'BundleProduct')
+
+  const bundleOptions = computed(() => cartItem.value.bundleOptions ?? [])
+
+  const options = computed(() => cartItem.value.options ?? [])
+
   return reactive({
     id,
     quantity,
@@ -22,5 +32,10 @@ export default (cartItem: Ref<ReturnType<typeof ToCartItem>>) => {
     rowTotal,
     stackable,
     product,
+    configurableOptions,
+    isConfigurableProduct,
+    isBundleProduct,
+    bundleOptions,
+    options,
   })
 }

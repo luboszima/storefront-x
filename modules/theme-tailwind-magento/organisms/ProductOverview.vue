@@ -12,12 +12,30 @@
       <Heading :level="1" data-cy="title">{{ product.name }}</Heading>
       <ReviewStars class="mt-2" :rating="product.ratingSummary" :count="product.reviewCount" />
 
+      <div v-if="product.productOptions.length" class="mt-3">
+        <h2 class="sr-only">Product options</h2>
+
+        <ProductOptions />
+      </div>
+
+      <div v-if="product.isConfigurableProduct" class="mt-3">
+        <h2 class="sr-only">Product configurations</h2>
+
+        <ProductConfigurableOptions />
+      </div>
+
+      <div v-if="product.isBundleProduct" class="mt-3">
+        <h2 class="sr-only">Product bundles</h2>
+
+        <ProductBundleOptions />
+      </div>
+
       <div class="mt-4">
         <h3 class="sr-only">Description</h3>
         <div class="links" v-html="product.shortDescriptionHtml" />
       </div>
 
-      <StockIndicators :stock-status="product.available" />
+      <StockIndicator :stock-status="product.available" />
 
       <div class="sm:flex">
         <div class="flex">
@@ -38,11 +56,13 @@
             </div>
           </div>
 
-          <ProductQuantityConfigurator :value="quantity" @input="onQuantityChange" />
+          <ProductQuantityConfigurator @input="onQuantityChange" />
         </div>
 
         <AddToCart :quantity="quantity" />
       </div>
+
+      <GroupedItems v-if="product.groupedItems.length && product.isGroupedProduct" />
 
       <GiftPanel />
 
@@ -65,14 +85,19 @@ import Heading from '#ioc/atoms/Heading'
 import ProductQuantityConfigurator from '#ioc/molecules/ProductQuantityConfigurator'
 import AddToCart from '#ioc/molecules/AddToCart'
 import ProductGallery from '#ioc/molecules/ProductGallery'
-import StockIndicators from '#ioc/atoms/StockIndicators'
+import StockIndicator from '#ioc/atoms/StockIndicator'
 import FacebookShare from '#ioc/atoms/FacebookShare'
 import AddToWishlist from '#ioc/molecules/AddToWishlist'
 import injectProduct from '#ioc/composables/injectProduct'
-import { computed, ref } from 'vue'
+import { computed, defineAsyncComponent, ref } from 'vue'
 import ReviewStars from '#ioc/atoms/ReviewStars'
 import GiftPanel from '#ioc/atoms/GiftPanel'
 import ProductLabel from '#ioc/atoms/ProductLabel'
+
+const ProductBundleOptions = defineAsyncComponent(() => import('#ioc/molecules/ProductBundleOptions'))
+const ProductConfigurableOptions = defineAsyncComponent(() => import('#ioc/molecules/ProductConfigurableOptions'))
+const ProductOptions = defineAsyncComponent(() => import('#ioc/molecules/ProductOptions'))
+const GroupedItems = defineAsyncComponent(() => import('#ioc/molecules/GroupedItems'))
 
 const { t } = useI18n()
 const product = injectProduct()
