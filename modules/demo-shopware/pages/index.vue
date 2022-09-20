@@ -1,6 +1,8 @@
 <template>
   <div class="pb-8">
-    <div class="main-slider"><SfxShopwareCmsBlock identifier="slider_hp" :class="containersSpacingClass" /></div>
+    <div class="main-slider mb-12">
+      <SfxShopwareCmsBlock identifier="slider_hp" :class="containersSpacingClass" />
+    </div>
 
     <Container :class="containersSpacingClass">
       <Usps :usps="usps" />
@@ -19,81 +21,62 @@
         <ReviewShowreel :reviews="reviews" />
       </Container>
     </div>
-
-    <Container :class="containersSpacingClass">
-      <BlogGrid :blog-posts="blogPosts" />
-    </Container>
   </div>
 </template>
 
-<script>
-import useGetBlogPosts from '#ioc/services/useGetBlogPosts'
-import SfxShopwareCmsBlock from '#ioc/components/SfxShopwareCmsBlock'
+<script setup lang="ts">
 import Container from '#ioc/atoms/Container'
-import BlogGrid from '#ioc/molecules/BlogGrid'
-import Usps from '#ioc/molecules/Usps'
-import CategoryPreviews from '#ioc/molecules/CategoryPreviews'
-import ReviewShowreel from '#ioc/molecules/ReviewShowreel'
 import useAsyncData from '#ioc/composables/useAsyncData'
 import useRoute from '#ioc/composables/useRoute'
 import useI18n from '#ioc/composables/useI18n'
-import { defineComponent } from 'vue'
+import Rocket from '#ioc/icons/custom/Rocket'
+import Gears from '#ioc/icons/custom/Gears'
+import Glass from '#ioc/icons/custom/Glass'
+import hydrateWhenVisible from '#ioc/utils/hydration/hydrateWhenVisible'
+import hydrateWhenIdle from '#ioc/utils/hydration/hydrateWhenIdle'
 
-export default defineComponent({
-  components: { ReviewShowreel, CategoryPreviews, BlogGrid, Container, Usps, SfxShopwareCmsBlock },
+const SfxShopwareCmsBlock = hydrateWhenIdle(() => import('#ioc/components/SfxShopwareCmsBlock'))
+const Usps = hydrateWhenVisible(() => import('#ioc/molecules/Usps'))
+const CategoryPreviews = hydrateWhenVisible(() => import('#ioc/molecules/CategoryPreviews'))
+const ReviewShowreel = hydrateWhenVisible(() => import('#ioc/molecules/ReviewShowreel'))
 
-  setup() {
-    const getBlogPosts = useGetBlogPosts()
-    const route = useRoute()
-    const { t } = useI18n()
+const route = useRoute()
+const { t } = useI18n()
 
-    const { data } = useAsyncData('blogPosts', () => getBlogPosts('ALL', undefined, Number(route.query.page || 1)))
-
-    return {
-      blogPosts: data?.value?.blogPosts,
-      t,
-    }
+const containersSpacingClass = { 'mb-12': true }
+const usps = [
+  {
+    title: t('customizable'),
+    description: t('cust_desc'),
+    component: Gears,
   },
-
-  data() {
-    return {
-      containersSpacingClass: { 'mb-12': true },
-      usps: [
-        {
-          title: this.t('customizable'),
-          description: this.t('cust_desc'),
-          icon: 'gears',
-        },
-        {
-          title: this.t('scalable'),
-          description: this.t('scalable_desc'),
-          icon: 'rocket',
-        },
-        {
-          title: this.t('improves_seo'),
-          description: this.t('seo_desc'),
-          icon: 'glass',
-        },
-      ],
-      reviews: [
-        {
-          logo: '/logos/logo_sporting.png',
-          description: this.t('review_desc_1'),
-          authorName: 'Libor Nejedlý',
-          authorRole: 'CEO Sporting.cz',
-          authorImage: '/images/portrait_2.jpg',
-        },
-        {
-          logo: '/logos/logo_weplay.png',
-          description: this.t('review_desc_2'),
-          authorName: 'Roman Solnař',
-          authorRole: 'E-Commerce Manager Weplay.cz',
-          authorImage: '/images/portrait_3.jpg',
-        },
-      ],
-    }
+  {
+    title: t('scalable'),
+    description: t('scalable_desc'),
+    component: Rocket,
   },
-})
+  {
+    title: t('improves_seo'),
+    description: t('seo_desc'),
+    component: Glass,
+  },
+]
+const reviews = [
+  {
+    logo: '/logos/logo_demo.png',
+    description: t('review_desc_1'),
+    authorName: 'Libor Test',
+    authorRole: 'CEO Demo.cz',
+    authorImage: '/images/portrait_2.jpg',
+  },
+  {
+    logo: '/logos/logo_demo2.png',
+    description: t('review_desc_2'),
+    authorName: 'Roman Test',
+    authorRole: 'E-Commerce at Another Demo Enterprises',
+    authorImage: '/images/portrait_3.jpg',
+  },
+]
 </script>
 
 <style scoped>
