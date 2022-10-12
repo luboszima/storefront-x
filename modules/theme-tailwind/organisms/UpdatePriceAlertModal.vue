@@ -4,12 +4,18 @@
     <p>{{ t('I want to be informed') }}</p>
     <SfxForm @submit="onSubmit">
       <p class="px-4">{{ t('When the price drops below:') }}</p>
-      <FormInput name="price" type="number" class="w-full text-center shadow-transparent border-0 mb-2" />
+      <FormInput
+        name="limit"
+        :value="alert.limit"
+        type="number"
+        class="w-full text-center shadow-transparent border-0 mb-2"
+      />
       <FormInput
         class="mb-6"
         name="email"
         type="email"
         :label="t('Email')"
+        :value="alert.email"
         autocomplete="email"
         validators="required|email"
       />
@@ -31,11 +37,18 @@ import SfxForm from '#ioc/components/SfxForm'
 
 const { t } = useI18n()
 
-const emit = defineEmits(['create', 'close'])
+defineProps({
+  alert: {
+    type: Object,
+    required: true,
+  },
+})
+
+const emit = defineEmits(['update', 'close'])
 
 const onSubmit = (data: any) => {
-  console.log('price alert modal data', data)
-  emit('create', { ...data })
+  console.log('update price alert modal data', data)
+  emit('update', { ...data })
 }
 
 const onClose = () => {
