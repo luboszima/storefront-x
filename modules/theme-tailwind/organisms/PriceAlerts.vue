@@ -4,7 +4,7 @@
     @click="onNew"
   >
     <OutlineBellRinging class="ml-2 mr-1 text-gray-400" /> {{ t('Alert') }}
-    <AddPriceAlertModal v-if="modalOpen" @close="onClose" />
+    <AddPriceAlertModal v-if="modalOpen" @close="onClose" @create="onCreate" />
   </button>
 </template>
 
@@ -16,6 +16,15 @@ import { ref } from 'vue'
 
 const modalOpen = ref(false)
 const { t } = useI18n()
+
+const onCreate = async (data: any) => {
+  try {
+    console.warn('price alerts', data)
+    onClose()
+  } catch (error) {
+    onClose()
+  }
+}
 
 const onClose = () => {
   modalOpen.value = false

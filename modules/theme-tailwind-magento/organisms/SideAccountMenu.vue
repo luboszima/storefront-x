@@ -140,6 +140,7 @@
 <script setup lang="ts">
 import Container from '#ioc/atoms/Container'
 import OutlineLogoutIcon from '#ioc/icons/OutlineLogoutIcon'
+import OutlineDocumentDownloadIcon from '#ioc/icons/OutlineDocumentDownloadIcon'
 import OutlineHomeIcon from '#ioc/icons/OutlineHomeIcon'
 import OutlineBellRinging from '#ioc/icons/OutlineBellRinging'
 import OutlineShoppingBag from '#ioc/icons/OutlineShoppingBag'
