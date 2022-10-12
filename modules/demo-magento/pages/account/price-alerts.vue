@@ -18,7 +18,7 @@
             <div>
               {{ $t('Item created at: {0}', [item.createdAt]) }}
             </div>
-            <div><a class="text-primary-500">odstranit</a></div>
+            <div><a class="text-primary-500" @click="handleDelete(item.id)">odstranit</a></div>
           </div>
         </div>
       </div>
@@ -29,6 +29,13 @@
 <script setup lang="ts">
 import SideAccountMenu from '#ioc/organisms/SideAccountMenu'
 import SfxImage from '#ioc/components/SfxImage'
+import { ref, onMounted } from 'vue'
+
+const priceAlerts = ref()
+
+onMounted(() => {
+  priceAlerts.value = data
+})
 
 const data = [
   {
@@ -44,6 +51,10 @@ const data = [
     thumbnailUrl: '/logos/logo_demo2.png',
   },
 ]
+
+const handleDelete = (id: string) => {
+  priceAlerts.value = data.filter((item) => id !== item.id)
+}
 </script>
 
 <i18n lang="yaml">

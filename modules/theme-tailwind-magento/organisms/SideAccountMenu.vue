@@ -90,6 +90,28 @@
           </span>
         </RouterLink>
 
+        <RouterLink
+          v-slot="{ isExactActive }"
+          :to="localePath('account/price-alerts')"
+          class="group border-l-4 px-3 py-2 flex items-center text-sm font-medium"
+          exact-active-class="bg-primary-50 border-primary-500 text-primary-700 hover:bg-primary-50 hover:text-primary-700"
+          exact-inactive-class="border-transparent text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+        >
+          <OutlineBellRinging
+            class="flex-shrink-0 -ml-1 mr-3 h-6 w-6"
+            :class="
+              isExactActive
+                ? 'text-primary-500 group-hover:text-primary-500'
+                : 'text-gray-400 group-hover:text-gray-500'
+            "
+            aria-hidden="true"
+          />
+
+          <span class="truncate">
+            {{ t('Price alerts') }}
+          </span>
+        </RouterLink>
+
         <Link
           class="group border-l-4 px-3 py-2 flex items-center text-sm font-medium"
           exact-inactive-class="border-transparent text-gray-900 hover:bg-gray-50 hover:text-gray-900"
@@ -119,7 +141,7 @@
 import Container from '#ioc/atoms/Container'
 import OutlineLogoutIcon from '#ioc/icons/OutlineLogoutIcon'
 import OutlineHomeIcon from '#ioc/icons/OutlineHomeIcon'
-import OutlineDocumentDownloadIcon from '#ioc/icons/OutlineDocumentDownloadIcon'
+import OutlineBellRinging from '#ioc/icons/OutlineBellRinging'
 import OutlineShoppingBag from '#ioc/icons/OutlineShoppingBag'
 import OutlineUser from '#ioc/icons/OutlineUser'
 import useLocalePath from '#ioc/composables/useLocalePath'
@@ -143,4 +165,5 @@ cs-CZ:
   Addresses: Adresy
   Downloadable products: Stahovatelné produkty
   Logout: Odhlásit se
+  Price alerts: Hlídání cen
 </i18n>
